@@ -11,7 +11,7 @@ on:
       - master
 
 jobs:
-  buildAndDeploy:
+  build-and-push-docker-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,15 +44,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        if: github.event_name != 'pull_request'
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.release.tag }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-        
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
@@ -64,6 +55,15 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           secrets: |
             FORMSPREE_API_URL=${{ secrets.FORMSPREE_API_URL }}
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        if: github.event_name != 'pull_request'
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.release.tag }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       # - name: Deploy
       #   uses: appleboy/ssh-action@master
