@@ -2,8 +2,6 @@ name: Deploy To Production
 
 on:
   push:
-    branches:
-      - "**"
     tags:
       - "v*.*.*"
   pull_request:
@@ -23,7 +21,8 @@ jobs:
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/portfoliosvelte
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            type=ref,event=branch
+            type=ref,event=pr
             type=semver,pattern={{version}}
 
       - name: Set up QEMU
@@ -59,15 +58,3 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ steps.meta.outputs.tags.version }}
           restore-keys: |
             ${{ runner.os }}-buildx-notFound
-
-      # - name: Deploy
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.HOST }}
-      #     username: ${{ secrets.USERNAME }}
-      #     key: ${{ secrets.PRIVSSHKEY }}
-      #     port: ${{ secrets.PORT }}
-      #     script: |
-      #       cd docker/services/portfolio_stack
-      #       docker compose pull portfolio
-      #       docker compose up -d portfolio --force-recreate
