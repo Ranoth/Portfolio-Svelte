@@ -76,3 +76,4 @@ jobs:
       #       cd docker/services/portfolio_stack
       #       docker compose pull portfolio
       #       docker compose up -d portfolio --force-recreate
+      # test
