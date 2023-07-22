@@ -23,13 +23,8 @@ jobs:
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/portfoliosvelte
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=ref,event=tag
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -61,7 +56,7 @@ jobs:
         if: github.event_name != 'pull_request'
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.ref_type.tags }}
+          key: ${{ runner.os }}-buildx-${{ steps.meta.outputs.tags.version }}
           restore-keys: |
             ${{ runner.os }}-buildx-notFound
 
