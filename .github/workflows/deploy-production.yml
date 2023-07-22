@@ -61,6 +61,14 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
             FORMSPREE_API_URL=${{ secrets.FORMSPREE_API_URL }}
+            
+      - name: Cache Quemu Setup
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.qemu
+          key: ${{ runner.os }}-qemu-${{ steps.qemu_version.outputs.tag }}
+          restore-keys: |
+            ${{ runner.os }}-qemu-
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -71,13 +79,6 @@ jobs:
             ${{ runner.os }}-buildx-${{ steps.buildx_version.outputs.tag }}-
             ${{ runner.os }}-buildx-
       
-      - name: Cache Quemu Setup
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.qemu
-          key: ${{ runner.os }}-qemu-${{ steps.qemu_version.outputs.tag }}
-          restore-keys: |
-            ${{ runner.os }}-qemu-
 
   deploy:
     needs: build
