@@ -11,7 +11,7 @@ on:
       - master
 
 jobs:
-  build:
+  buildAndDeploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -79,11 +79,6 @@ jobs:
             ${{ runner.os }}-buildx-${{ steps.buildx_version.outputs.tag }}-
             ${{ runner.os }}-buildx-
       
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
