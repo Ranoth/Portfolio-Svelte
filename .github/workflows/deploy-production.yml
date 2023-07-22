@@ -61,7 +61,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
             FORMSPREE_API_URL=${{ secrets.FORMSPREE_API_URL }}
-            
+
       - name: Cache Quemu Setup
         uses: actions/cache@v2
         with:
