@@ -29,21 +29,13 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
+            type=latest
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
-      - name: Get QEMU version
-        id: qemu_version
-        run: echo ::set-output name=tag::$(docker run --rm --entrypoint qemu-system-x86_64 --help | head -n1 | awk '{print $$3}')
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
-      - name: Get Docker Buildx version
-        id: buildx_version
-        run: echo ::set-output name=tag::$(docker buildx version | awk '{print $$2}')
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -52,6 +44,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        if: github.event_name != 'pull_request'
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.release.tag }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+        
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
@@ -59,34 +60,19 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
           secrets: |
             FORMSPREE_API_URL=${{ secrets.FORMSPREE_API_URL }}
 
-      - name: Cache Quemu Setup
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.qemu
-          key: ${{ runner.os }}-qemu-${{ steps.qemu_version.outputs.tag }}
-          restore-keys: |
-            ${{ runner.os }}-qemu-
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ steps.buildx_version.outputs.tag }}-${{ steps.qemu_version.outputs.tag }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-${{ steps.buildx_version.outputs.tag }}-
-            ${{ runner.os }}-buildx-
-      
-      - name: Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVSSHKEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cd docker/services/portfolio_stack
-            docker compose pull portfolio
-            docker compose up -d portfolio --force-recreate
+      # - name: Deploy
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USERNAME }}
+      #     key: ${{ secrets.PRIVSSHKEY }}
+      #     port: ${{ secrets.PORT }}
+      #     script: |
+      #       cd docker/services/portfolio_stack
+      #       docker compose pull portfolio
+      #       docker compose up -d portfolio --force-recreate
