@@ -23,9 +23,6 @@ jobs:
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/portfoliosvelte
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{major}}.{{minor}}
 
       - name: Set up QEMU
@@ -58,7 +55,7 @@ jobs:
         if: github.event_name != 'pull_request'
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-${{ github.ref_type.tags }}-${{ hashFiles('**/Dockerfile') }}
           restore-keys: |
             ${{ runner.os }}-buildx-notFound
 
