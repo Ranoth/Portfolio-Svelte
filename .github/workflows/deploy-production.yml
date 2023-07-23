@@ -57,4 +57,4 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ steps.meta.outputs.tags }}
           restore-keys: |
-            ${{ runner.os }}-buildx-none
+            ${{ runner.os }}-buildx-

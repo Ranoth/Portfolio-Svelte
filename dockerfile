@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.18 as builder
+FROM node:alpine3.18 as builder
 WORKDIR /app
 
 COPY . .
@@ -10,7 +10,7 @@ RUN --mount=type=secret,id=FORMSPREE_API_URL \
     export PUBLIC_GITHUB_API_URL=https://api.github.com && \
     npm run build
 
-FROM node:lts-alpine3.18
+FROM node:alpine3.18
 WORKDIR /app
 RUN rm -rf ./*
 COPY --from=builder /app/package.json .
