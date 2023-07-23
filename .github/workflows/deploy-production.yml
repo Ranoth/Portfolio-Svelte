@@ -55,6 +55,6 @@ jobs:
         if: github.event_name != 'pull_request'
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ steps.meta.outputs.tags.version }}
+          key: ${{ runner.os }}-buildx-${{ steps.meta.outputs.tags }}
           restore-keys: |
-            ${{ runner.os }}-buildx-notFound
+            ${{ runner.os }}-buildx-none
