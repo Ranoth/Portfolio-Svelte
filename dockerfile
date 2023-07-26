@@ -3,9 +3,7 @@ WORKDIR /app
 
 COPY . .
 RUN --mount=type=secret,id=ENVFILE \
-    set -a && \
-    source /run/secrets/ENVFILE && \
-    set +a && \
+    export $(xargs < /run/secrets/ENVFILE) && \
     npm run install
 
 # RUN --mount=type=secret,id=FORMSPREE_API_URL \
