@@ -13,7 +13,7 @@ RUN npm install
 RUN --mount=type=secret,id=ENVFILE \
     while IFS = read -r line; do \
     export "$line" \ 
-    done < echo $( cat /run/secrets/ENVFILE ) && \
+    done < $( cat /run/secrets/ENVFILE ) && \
     npm run build
 
 FROM node:alpine3.18
