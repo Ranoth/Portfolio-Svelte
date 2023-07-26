@@ -2,9 +2,11 @@ FROM node:alpine3.18 as builder
 WORKDIR /app
 
 COPY . .
+
 RUN --mount=type=secret,id=ENVFILE \
-    export $(xargs < /run/secrets/ENVFILE) && \
-    npm run install
+    export $(xargs < /run/secrets/ENVFILE)
+
+RUN npm run install
 
 # RUN --mount=type=secret,id=FORMSPREE_API_URL \
 #     export FORMSPREE_API_URL=$( cat /run/secrets/FORMSPREE_API_URL ) && \
