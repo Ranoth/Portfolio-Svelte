@@ -2,4 +2,3 @@
 [![Release](https://img.shields.io/github/v/release/Ranoth/Portfolio-Svelte)](https://github.com/Ranoth/Portfolio-Svelte/releases)
 [![GitHub Super-Linter](https://github.com/Ranoth/Portfolio-Svelte/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 [![Build and Push Docker Image](https://github.com/Ranoth/Portfolio-Svelte/workflows/Build%20and%20Push%20Docker%20Image/badge.svg)](https://github.com/Ranoth/Portfolio-Svelte/actions?query=workflow%3A%22Build+and+Push+Docker+Image%22)
-[![Last Commit](https://img.shields.io/github/last-commit/Ranoth/Portfolio-Svelte)](https://github.com/Ranoth/Portfolio-Svelte/commits/master)
