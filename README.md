@@ -1,3 +1,2 @@
 [![GitHub Super-Linter](https://github.com/Ranoth/Portfolio-Svelte/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/2b0b5b9a-5b0a-4b9a-8b9a-4b8b9a5b0b5a/deploy-status)](https://app.netlify.com/sites/ranoth-portfolio/deploys)
 [![tag](https://img.shields.io/github/v/tag/Ranoth/Portfolio-Svelte)](https://github.com/Ranoth/Portfolio-Svelte/tags)
