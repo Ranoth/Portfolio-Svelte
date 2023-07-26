@@ -3,7 +3,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install
+RUN --mount=type=secret,id=ENVFILE \
+    export $( xargs < /run/secrets/ENVFILE ) && \
+    npm run install
 
 RUN npm run build
 
