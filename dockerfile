@@ -10,8 +10,10 @@ RUN npm install
 #     export PUBLIC_GITHUB_API_URL=https://api.github.com && \
 #     npm run build
 
-RUN --mount=type=secret, id=ENVFILE \
-    while IFS = read -r line; do export "$line"; done < echo $( cat /run/secrets/ENVFILE ) && \
+RUN --mount=type=secret,id=ENVFILE \
+    while IFS = read -r line; do \
+    export | echo "$line" \ 
+    done < echo $( cat /run/secrets/ENVFILE ) && \
     npm run build
 
 FROM node:alpine3.18
