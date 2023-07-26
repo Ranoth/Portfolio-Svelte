@@ -2,8 +2,7 @@ FROM node:alpine3.18 as builder
 WORKDIR /app
 
 COPY . .
-
-RUN npm run install
+RUN npm install
 
 RUN --mount=type=secret,id=ENVFILE \
     export $(cat /run/secrets/ENVFILE | xargs) && \
