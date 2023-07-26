@@ -3,9 +3,9 @@ WORKDIR /app
 
 COPY . .
 RUN --mount=type=secret,id=ENVFILE \
-    while IFS= read -r line; do \
-    export "$line" \ 
-    done < /run/secrets/ENVFILE && \
+    set -a && \
+    source /run/secrets/ENVFILE && \
+    set +a && \
     npm run install
 
 # RUN --mount=type=secret,id=FORMSPREE_API_URL \
