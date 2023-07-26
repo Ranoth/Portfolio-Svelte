@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "v*.*.*"
+    branches:
+      - master
   pull_request:
     branches:
       - master
@@ -48,7 +50,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           secrets: |
-            FORMSPREE_API_URL=${{ secrets.FORMSPREE_API_URL }}
+            "ENVFILE=${{ secrets.ENVFILE }}"
 
       - name: Cache Docker layers
         uses: actions/cache@v2

@@ -4,10 +4,14 @@ WORKDIR /app
 COPY . .
 RUN npm install
 
-RUN --mount=type=secret,id=FORMSPREE_API_URL \
-    export FORMSPREE_API_URL=$( cat /run/secrets/FORMSPREE_API_URL ) && \
-    export PUBLIC_GITHUB_USERNAME=Ranoth && \
-    export PUBLIC_GITHUB_API_URL=https://api.github.com && \
+# RUN --mount=type=secret,id=FORMSPREE_API_URL \
+#     export FORMSPREE_API_URL=$( cat /run/secrets/FORMSPREE_API_URL ) && \
+#     export PUBLIC_GITHUB_USERNAME=Ranoth && \
+#     export PUBLIC_GITHUB_API_URL=https://api.github.com && \
+#     npm run build
+
+RUN --mount=type=secret, id=ENVFILE \
+    export $( cat /run/secrets/ENVFILE | xargs ) && \
     npm run build
 
 FROM node:alpine3.18
