@@ -1,6 +1,5 @@
 docker-compose.yml
 .gitignore
-.gulpfile.ts
 .prettierrc
 .prettiritignore
 .vscode
