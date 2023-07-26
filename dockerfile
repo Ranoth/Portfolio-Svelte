@@ -7,7 +7,7 @@ RUN npm install
 SHELL ["/bin/bash", "-c"]
 
 RUN --mount=type=secret,id=ENVFILE \
-    export $( xargs < /run/secrets/ENVFILE ) && \
+    export $(cat /run/secrets/ENVFILE | xargs) && \
     npm run build
 
 FROM node:alpine3.18
