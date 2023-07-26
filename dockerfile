@@ -3,23 +3,7 @@ WORKDIR /app
 
 COPY . .
 
-# RUN --mount=type=secret,id=ENVFILE \
-#     export $(xargs < cat $( /run/secrets/ENVFILE )) && \
-#     npm run install
-
-RUN npm run install
-
-# RUN --mount=type=secret,id=FORMSPREE_API_URL \
-#     export FORMSPREE_API_URL=$( cat /run/secrets/FORMSPREE_API_URL ) && \
-#     export PUBLIC_GITHUB_USERNAME=Ranoth && \
-#     export PUBLIC_GITHUB_API_URL=https://api.github.com && \
-#     npm run build
-
-# RUN --mount=type=secret,id=ENVFILE \
-#     while IFS= read -r line; do \
-#     export "$line" \ 
-#     done < "/run/secrets/ENVFILE" && \
-#     npm run build
+RUN npm install
 
 RUN npm run build
 
