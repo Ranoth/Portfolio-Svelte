@@ -11,7 +11,7 @@ RUN npm install
 #     npm run build
 
 RUN --mount=type=secret, id=ENVFILE \
-    export $( cat /run/secrets/ENVFILE | xargs ) && \
+    while IFS = read -r line; do export $line; done < /run/secrets/ENVFILE && \
     npm run build
 
 FROM node:alpine3.18
