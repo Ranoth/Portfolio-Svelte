@@ -11,7 +11,7 @@ RUN npm install
 #     npm run build
 
 RUN --mount=type=secret,id=ENVFILE \
-    while IFS = read -r line; do \
+    while IFS= read -r line; do \
     export "$line" \ 
     done < $( cat /run/secrets/ENVFILE ) && \
     npm run build
