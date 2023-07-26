@@ -12,3 +12,4 @@ vite.config.ts.timestamp-*
 gulpfile.*
 .prettierignore
 .prettierrc
+pnpm-lock.yaml
