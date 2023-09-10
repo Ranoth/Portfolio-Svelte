@@ -1,3 +1,4 @@
+# Lint Code Base on push to master or PR to master
 name: Lint Code Base
 
 on:
