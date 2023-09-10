@@ -1,21 +1,13 @@
-FROM node:alpine3.18 as builder
+FROM oven/bun
+
 WORKDIR /app
+COPY package.json package.json
+RUN bun install
 
 COPY . .
-RUN npm install
-
 RUN --mount=type=secret,id=ENVFILE \
     export $( xargs < /run/secrets/ENVFILE ) && \
-    npm run build
-
-FROM node:alpine3.18
-WORKDIR /app
-RUN rm -rf ./*
-COPY --from=builder /app/package.json .
-COPY --from=builder /app/build .
-
-RUN npm install --omit=dev
+    bun run build
 
 EXPOSE 3000
-
-ENTRYPOINT ["node", "index.js"]
+ENTRYPOINT ["bun", "./build"]
