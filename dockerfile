@@ -18,10 +18,9 @@
 FROM oven/bun as builder
 WORKDIR /app
 
-COPY package.json package.json
-RUN bun install
-
 COPY . .
+
+RUN bun install
 
 RUN --mount=type=secret,id=ENVFILE \
     export $( xargs < /run/secrets/ENVFILE ) && \
@@ -33,8 +32,6 @@ WORKDIR /app
 RUN rm -rf ./*
 COPY --from=builder /app/package.json .
 COPY --from=builder /app/build .
-
-RUN bun install
 
 EXPOSE 3000
 
