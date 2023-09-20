@@ -30,7 +30,6 @@ FROM oven/bun
 WORKDIR /app
 
 RUN rm -rf ./*
-COPY --from=builder /app/package.json .
 COPY --from=builder /app/build .
 
 EXPOSE 3000
