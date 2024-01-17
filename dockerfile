@@ -24,7 +24,8 @@ RUN bun install
 
 RUN --mount=type=secret,id=ENVFILE \
     export $( xargs < /run/secrets/ENVFILE ) && \
-    bun run build
+    bun run build \
+    ls -la /app
 
 FROM oven/bun
 WORKDIR /app
