@@ -22,7 +22,7 @@ COPY . .
 
 RUN bun install
 
-RUN ORIGIN=http://localhost:3000 node server.js
+RUN bun env set ORIGIN=http://localhost:3000
 
 RUN --mount=type=secret,id=ENVFILE \
     export $( xargs < /run/secrets/ENVFILE ) && \
