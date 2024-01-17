@@ -33,8 +33,6 @@ WORKDIR /app
 RUN rm -rf ./*
 COPY --from=builder /app/build .
 
-RUN export ORIGIN=http://localhost:3000 node server.js
-
 EXPOSE 3000
 
 ENTRYPOINT ["bun", "index.js"]
