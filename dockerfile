@@ -22,7 +22,6 @@ COPY . .
 
 RUN bun install
 
-RUN bun env set ORIGIN=http://localhost:3000
 
 RUN --mount=type=secret,id=ENVFILE \
     export $( xargs < /run/secrets/ENVFILE ) && \
@@ -33,6 +32,8 @@ WORKDIR /app
 
 RUN rm -rf ./*
 COPY --from=builder /app/build .
+
+RUN export ORIGIN=http://localhost:3000
 
 EXPOSE 3000
 
