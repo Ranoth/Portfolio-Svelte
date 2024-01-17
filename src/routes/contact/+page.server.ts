@@ -6,6 +6,11 @@ export const load = (async () => {
 	return {};
 }) satisfies PageServerLoad;
 
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+
 const contactSchema = z.object({
 	name: z
 		.string({ required_error: "Votre nom est requis" })
@@ -27,22 +32,26 @@ const contactSchema = z.object({
 });
 
 async function postData(formData: any) {
-	return await fetch(FORMSPREE_API_URL, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			name: formData.get("name"),
-			email: formData.get("email"),
-			subject: formData.get("subject"),
-			message: formData.get("message"),
-		}),
-	})
-		.then((res) => res.json())
-		.then((data) => console.log(data))
-		.catch((err) => console.log(err));
-}
+
+	app.use(cors());
+	return await app.post(FORMSPREE_API_URL, async (req: any, res: any) => {
+		return await fetch(FORMSPREE_API_URL, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: formData.get("name"),
+				email: formData.get("email"),
+				subject: formData.get("subject"),
+				message: formData.get("message"),
+			}),
+		})
+			.then((res) => res.json())
+			.then((data) => console.log(data))
+			.catch((err) => console.log(err));
+	});
+};
 
 export const actions: Actions = {
 	postContact: async ({ request }) => {
