@@ -13,7 +13,6 @@
 
   "parserOptions": {
     "project": "./tsconfig.json",
-    "includes": "./gulpfile.ts"
   },
 
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias

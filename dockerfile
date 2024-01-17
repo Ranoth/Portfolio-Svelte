@@ -1,37 +1,34 @@
-# FROM oven/bun
-
-# WORKDIR /app
-# COPY package.json package.json
-# RUN bun install
-
-# COPY . .
-
-# RUN --mount=type=secret,id=ENVFILE \
-#     export $( xargs < /run/secrets/ENVFILE ) && \
-#     bun run build
-
-# EXPOSE 3000
-# ENTRYPOINT ["bun", "./build"]
-
-# ------------------------------
-
-FROM oven/bun as builder
+FROM node:alpine3.18 as base
 WORKDIR /app
 
+FROM base as install
+RUN mkdir -p /temp/dev
+COPY package.json package-lock.json /temp/dev/
+RUN cd /temp/dev && npm install
+
+RUN mkdir -p /temp/prod
+COPY package.json package-lock.json /temp/prod/
+RUN cd /temp/prod && npm install --omit=dev
+
+FROM base as prerelease
+COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-RUN bun install
-
+ENV NODE_ENV=production
 RUN --mount=type=secret,id=ENVFILE \
     export $( xargs < /run/secrets/ENVFILE ) && \
-    bun run build
+    npm run build
 
-FROM oven/bun
-WORKDIR /app
+RUN npm install --omit=dev
 
-RUN rm -rf ./*
-COPY --from=builder /app/build .
+FROM base as release
+COPY --from=install /temp/prod/node_modules node_modules
+COPY --from=prerelease /app/build .
+COPY --from=prerelease /app/package.json .
+
+ENV NODE_ENV=production
+ENV ORIGIN=https://leobuhot.com
 
 EXPOSE 3000
 
-ENTRYPOINT ["bun", "index.js"]
+ENTRYPOINT ["node", "index.js"]
