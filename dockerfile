@@ -70,7 +70,7 @@ COPY --from=install /temp/dev/node_modules node_modules
 COPY --from=prerelease /app/build .
 COPY --from=prerelease /app/package.json .
 
-ENV ORIGIN=http://localhost:3000
+ENV ORIGIN=https://leobuhot.com
 
 EXPOSE 3000
 ENTRYPOINT ["bun", "run", "index.js"]
