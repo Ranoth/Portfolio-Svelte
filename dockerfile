@@ -22,7 +22,6 @@ COPY . .
 
 RUN bun install
 
-
 RUN --mount=type=secret,id=ENVFILE \
     export $( xargs < /run/secrets/ENVFILE ) && \
     bun run build
