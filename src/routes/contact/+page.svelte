@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { enhance } from "$app/forms";
+	import { enhance } from '$app/forms';
 	import type { ActionData, SubmitFunction } from "./$types";
 
-	export let form: ActionData | any;
+	export let form: ActionData;
 
 	let loading = false;
 
-	const animateWait: SubmitFunction = async (input) => {
+	const animateWait: SubmitFunction = async () => {
 		loading = true;
 		return async ({ update }) => {
 			loading = false;
@@ -23,8 +23,8 @@
 
 {#if !form?.success ?? false}
 	<form
+		method="POST"
 		action="?/postContact"
-		method="post"
 		use:enhance={animateWait}
 		class="grid grid-cols-2 items-stretch gap-3">
 		<div>
@@ -73,7 +73,7 @@
 				name="message"
 				rows="6"
 				placeholder="Votre message"
-				value={form?.data?.message ?? ""}
+				value={form?.data?.message?.toString() ?? ""}
 				class:border-red-600={form?.errors?.message ?? false} />
 			{#if form?.errors?.message ?? false}
 				<p class="text-xs text-red-600">{form?.errors?.message[0]}</p>
@@ -100,7 +100,9 @@
 		<button
 			class="btn-primary btn m-5"
 			on:click={() => {
-				form.success = false;
+				if (form) {
+					form.success = false;
+				}
 			}}>Retourner au formulaire</button>
 	</div>
 {/if}

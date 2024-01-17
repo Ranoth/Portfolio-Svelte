@@ -1,15 +1,15 @@
 import { FORMSPREE_API_URL } from "$env/static/private";
-import type { Actions, PageServerLoad } from "./$types";
+import type { Actions } from "@sveltejs/kit";
+import type { PageServerLoad } from "./$types";
 import { z } from "zod";
 
-export const load = (async () => {
+// export const load = (async () => {
+// 	return {};
+// }) satisfies PageServerLoad;
+
+export const load: PageServerLoad = async () => {
 	return {};
-}) satisfies PageServerLoad;
-
-// const express = require("express");
-// const cors = require("cors");
-
-// const app = express();
+};
 
 const contactSchema = z.object({
 	name: z
@@ -32,8 +32,6 @@ const contactSchema = z.object({
 });
 
 async function postData(formData: any) {
-
-
 	return await fetch(FORMSPREE_API_URL, {
 		method: "POST",
 		headers: {
@@ -46,19 +44,19 @@ async function postData(formData: any) {
 			message: formData.get("message"),
 		}),
 	})
-	.then((res) => res.json())
-	.then((data) => console.log(data))
-	.catch((err) => console.log(err));
-};
+		.then((res) => res.json())
+		.then((data) => console.log(data))
+		.catch((err) => console.log(err));
+}
 
+/** @type {import('./$types').Actions} */
 export const actions: Actions = {
 	postContact: async ({ request }) => {
 		const formData = await request.formData();
-
 		const zForm = Object.fromEntries(formData);
 
 		try {
-			const result = contactSchema.parse(zForm);
+			contactSchema.parse(zForm);
 			await postData(formData);
 			return {
 				success: true,
