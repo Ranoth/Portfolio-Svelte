@@ -1,4 +1,9 @@
-import { FORMSPREE_API_URL } from "$env/static/private";
+import {
+	FORMSPREE_API_URL,
+	NTFY_URL,
+	BASIC_AUTH_USERNAME,
+	BASIC_AUTH_PASSWORD,
+} from "$env/static/private";
 import type { Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { z } from "zod";
@@ -31,18 +36,40 @@ const contactSchema = z.object({
 		.trim(),
 });
 
+// async function postData(formData: any) {
+// 	return await fetch(FORMSPREE_API_URL, {
+// 		method: "POST",
+// 		headers: {
+// 			"Content-Type": "application/json",
+// 		},
+// 		body: JSON.stringify({
+// 			name: formData.get("name"),
+// 			email: formData.get("email"),
+// 			subject: formData.get("subject"),
+// 			message: formData.get("message"),
+// 		}),
+// 	})
+// 		.then((res) => res.json())
+// 		.then((data) => console.log(data))
+// 		.catch((err) => console.log(err));
+// }
+
 async function postData(formData: any) {
-	return await fetch(FORMSPREE_API_URL, {
+	return await fetch(NTFY_URL, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
+			Authorization: `Basic ${btoa(
+				`${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}`
+			)}`,
+			Title: "New Contact Form Submission",
+			Priority: "4",
 		},
-		body: JSON.stringify({
-			name: formData.get("name"),
-			email: formData.get("email"),
-			subject: formData.get("subject"),
-			message: formData.get("message"),
-		}),
+		body: `Name: ${formData.get("name")}\nEmail: ${formData.get(
+			"email"
+		)}\nSubject: ${formData.get("subject")}\nMessage: ${formData.get(
+			"message"
+		)}`,
 	})
 		.then((res) => res.json())
 		.then((data) => console.log(data))
