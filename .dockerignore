@@ -1,9 +1,10 @@
 node_modules
-Dockerfile*
+dockerfile*
 docker-compose*
 .dockerignore
 .git
 .gitignore
+.github
 README.md
 LICENSE
 .vscode
@@ -12,3 +13,6 @@ helm-charts
 .editorconfig
 .idea
 coverage*
+.prettierrc
+.prettierignore
+.env.example
