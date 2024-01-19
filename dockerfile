@@ -14,12 +14,9 @@ FROM base as prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-ENV NODE_ENV=production
 RUN --mount=type=secret,id=ENVFILE \
     export $( xargs < /run/secrets/ENVFILE ) && \
     npm run build
-
-RUN npm install --omit=dev
 
 FROM base as release
 COPY --from=install /temp/prod/node_modules node_modules
