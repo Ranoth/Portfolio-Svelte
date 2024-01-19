@@ -35,11 +35,8 @@
   },
   "type": "module",
   "dependencies": {
-    "cookie": "^0.6.0",
     "daisyui": "^2.52.0",
-    "devalue": "^4.3.2",
     "iconify-icon": "^1.0.8",
-    "set-cookie-parser": "^2.6.0",
     "zod": "^3.22.1"
   }
 }
