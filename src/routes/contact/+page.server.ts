@@ -1,5 +1,4 @@
 import {
-	FORMSPREE_API_URL,
 	NTFY_URL,
 	BASIC_AUTH_USERNAME,
 	BASIC_AUTH_PASSWORD,
@@ -7,10 +6,6 @@ import {
 import type { Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { z } from "zod";
-
-// export const load = (async () => {
-// 	return {};
-// }) satisfies PageServerLoad;
 
 export const load: PageServerLoad = async () => {
 	return {};
@@ -35,24 +30,6 @@ const contactSchema = z.object({
 		.min(1, { message: "Un message est requis" })
 		.trim(),
 });
-
-// async function postData(formData: any) {
-// 	return await fetch(FORMSPREE_API_URL, {
-// 		method: "POST",
-// 		headers: {
-// 			"Content-Type": "application/json",
-// 		},
-// 		body: JSON.stringify({
-// 			name: formData.get("name"),
-// 			email: formData.get("email"),
-// 			subject: formData.get("subject"),
-// 			message: formData.get("message"),
-// 		}),
-// 	})
-// 		.then((res) => res.json())
-// 		.then((data) => console.log(data))
-// 		.catch((err) => console.log(err));
-// }
 
 async function postData(formData: any) {
 	return await fetch(NTFY_URL, {
