@@ -27,7 +27,8 @@ COPY --from=prerelease /app/build .
 COPY --from=prerelease /app/package.json .
 
 ENV NODE_ENV=production
-ENV ORIGIN=https://leobuhot.com
+ENV PROTOCOL_HEADER=x-forwarded-proto
+ENV HOST_HEADER=x-forwarded-host
 
 EXPOSE 3000
 
