@@ -53,10 +53,10 @@
 				</li>
 			</ul>
 		</div>
-		<a
+		<!-- <a
 			href="/"
 			class="btn-ghost btn text-xl normal-case text-accent brightness-150 drop-shadow"
-			>Portfolio</a>
+			>Portfolio</a> -->
 	</div>
 	<div class="navbar-center hidden sm:flex" id="center menu">
 		<ul class="tabs z-20 justify-between gap-3 px-1">
@@ -107,9 +107,9 @@
 		</ul>
 	</div>
 	<div class="navbar-end">
-		<a
+		<!-- <a
 			href="/"
 			class="btn-ghost btn hidden text-xl normal-case text-indigo-600 drop-shadow sm:flex"
-			>Léo Buhot</a>
+			>Léo Buhot</a> -->
 	</div>
 </nav>
