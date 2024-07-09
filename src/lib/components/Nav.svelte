@@ -15,7 +15,7 @@
 		<div class="dropdown" id="dropdown-menu">
 			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 			<label
-				class="swap btn-ghost btn sm:hidden"
+				class="btn swap btn-ghost sm:hidden"
 				on:focus={() => swapActive()}
 				on:blur={() => swapActive()}
 				id="dropdown-button"
@@ -35,7 +35,8 @@
 			<ul
 				class="dropdown-content menu rounded-box w-56 border border-primary bg-base-200">
 				<li>
-					<a href="/" class:bg-primary={$page.url.pathname === "/"}>Qui suis-je</a>
+					<a href="/" class:bg-primary={$page.url.pathname === "/"}
+						>Qui suis-je</a>
 				</li>
 				<!-- <li>
 					<a href="/about" class:bg-primary={$page.url.pathname === "/about"}
@@ -63,7 +64,7 @@
 			<li>
 				<a
 					href="/"
-					class="no-animation btn translate-y-2.5 border-2 border-primary text-white xl:btn-wide"
+					class="btn no-animation translate-y-2.5 border-2 border-primary text-white xl:btn-wide"
 					class:btn-primary={$page.url.pathname !== "/"}
 					class:transform-none={$page.url.pathname !== "/"}
 					class:border-b-0={$page.url.pathname === "/"}
@@ -85,7 +86,7 @@
 			<li>
 				<a
 					href="/projets"
-					class="no-animation btn translate-y-2.5 border-2 border-primary text-white xl:btn-wide"
+					class="btn no-animation translate-y-2.5 border-2 border-primary text-white xl:btn-wide"
 					class:btn-primary={$page.url.pathname !== "/projets"}
 					class:transform-none={$page.url.pathname !== "/projets"}
 					class:border-b-0={$page.url.pathname === "/projets"}
@@ -96,7 +97,7 @@
 			<li>
 				<a
 					href="/contact"
-					class="no-animation btn translate-y-2.5 border-2 border-primary text-white xl:btn-wide"
+					class="btn no-animation translate-y-2.5 border-2 border-primary text-white xl:btn-wide"
 					class:btn-primary={$page.url.pathname !== "/contact"}
 					class:transform-none={$page.url.pathname !== "/contact"}
 					class:border-b-0={$page.url.pathname === "/contact"}
