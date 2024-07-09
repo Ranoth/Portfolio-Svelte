@@ -19,7 +19,6 @@
     "@testing-library/svelte": "github:testing-library/svelte-testing-library",
     "@types/node": "^18.17.5",
     "autoprefixer": "^10.4.15",
-    "gulp": "^4.0.2",
     "playwright": "^1.37.0",
     "postcss": "^8.4.28",
     "prettier-plugin-svelte": "^2.10.1",

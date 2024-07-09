@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Qui sui-je</title>
+	<title>Qui suis-je</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="description" content="Mon CV">
 </svelte:head>
