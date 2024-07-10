@@ -12,7 +12,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"generate-sitemap": "sveltekit-sitemap --domain https://leobuhot.com"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -30,6 +31,7 @@
 		"postcss": "^8.4.38",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
+		"rimraf": "^6.0.0",
 		"sucrase": "^3.35.0",
 		"svelte": "^4.2.7",
 		"svelte-check": "^3.6.0",
@@ -43,6 +45,7 @@
 	"dependencies": {
 		"daisyui": "^4.10.5",
 		"iconify-icon": "^2.1.0",
+		"sveltekit-sitemap": "github:Joonel/sveltekit-sitemap",
 		"zod": "^3.23.6"
 	}
 }

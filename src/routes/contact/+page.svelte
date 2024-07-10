@@ -46,7 +46,7 @@
 				class="input-bordered input w-full border-accent"
 				type="text"
 				name="email"
-				placeholder="préfixe@domaine.tld"
+				placeholder="prefixe@domaine.tld"
 				value={form?.data?.email ?? ""}
 				class:border-red-600={form?.errors?.email ?? false} />
 			{#if form?.errors?.email ?? false}
