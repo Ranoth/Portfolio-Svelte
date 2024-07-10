@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.12](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.0.11...v1.0.12) (2024-07-10)
+
+
+### Bug Fixes
+
+* Update alpine version in image ([eda062c](https://github.com/Ranoth/Portfolio-Svelte/commit/eda062c50f1552f50cc790c0c28b0ed4635f1460))
+
 ## [1.0.11](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.0.10...v1.0.11) (2024-07-10)
 
 
