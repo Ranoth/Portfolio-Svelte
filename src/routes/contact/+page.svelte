@@ -46,7 +46,7 @@
 				class="input-bordered input w-full border-accent"
 				type="text"
 				name="email"
-				placeholder="prefixe@domaine.tld"
+				placeholder="préfixe@domaine.tld"
 				value={form?.data?.email ?? ""}
 				class:border-red-600={form?.errors?.email ?? false} />
 			{#if form?.errors?.email ?? false}
@@ -90,7 +90,7 @@
 					height="24"
 					class:animate-spin={loading} />
 			{:else}
-				Envoyer
+				Send
 			{/if}
 		</button>
 	</form>
