@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.1.0...v1.1.1) (2025-06-19)
+
+
+### Bug Fixes
+
+* Do not cache image anymore ([139019a](https://github.com/Ranoth/Portfolio-Svelte/commit/139019a0d2a3a959ef2ce844be8be6d92997e229))
+
 ## [1.1.0](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.0.12...v1.1.0) (2025-06-19)
 
 
