@@ -90,7 +90,7 @@
 					height="24"
 					class:animate-spin={loading} />
 			{:else}
-				Send
+				Envoyer
 			{/if}
 		</button>
 	</form>
