@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.0.12...v1.1.0) (2025-06-19)
+
+
+### Features
+
+* Update who am I page ([4b5f7e6](https://github.com/Ranoth/Portfolio-Svelte/commit/4b5f7e641ed1f4db961af209e6a64c50c35c9ea9))
+
+
+### Bug Fixes
+
+* "Send" is now "Envoyer" ([555acb5](https://github.com/Ranoth/Portfolio-Svelte/commit/555acb55a70958e3e5abee37e5b9253e2eb52335))
+
 ## [1.0.12](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.0.11...v1.0.12) (2024-07-10)
 
 
