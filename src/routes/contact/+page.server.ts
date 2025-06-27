@@ -1,11 +1,10 @@
-import { env } from '$env/dynamic/private';
 import type { Actions } from '@sveltejs/kit';
 import { z } from 'zod';
 
-const NTFY_URL = env.NTFY_URL;
-const BASIC_AUTH_USERNAME = env.BASIC_AUTH_USERNAME;
-const BASIC_AUTH_PASSWORD = env.BASIC_AUTH_PASSWORD;
-const RECAPTCHA_SECRET_KEY = env.RECAPTCHA_SECRET_KEY;
+const NTFY_URL = process.env.NTFY_URL;
+const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME;
+const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD;
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
 // Base schema without reCAPTCHA
 const baseContactSchema = z.object({
