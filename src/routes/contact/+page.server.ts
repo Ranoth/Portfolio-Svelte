@@ -1,10 +1,10 @@
-// import { BASIC_AUTH_PASSWORD, BASIC_AUTH_USERNAME, NTFY_URL, RECAPTCHA_SECRET_KEY } from '$env/static/private';
+import { BASIC_AUTH_PASSWORD, BASIC_AUTH_USERNAME, NTFY_URL } from '$env/static/private';
 import type { Actions } from '@sveltejs/kit';
 import { z } from 'zod';
 
-const NTFY_URL = process.env.NTFY_URL;
-const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME;
-const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD;
+// const NTFY_URL = process.env.NTFY_URL;
+// const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME;
+// const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD;
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
 // Base schema without reCAPTCHA
