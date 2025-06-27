@@ -22,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/portfolio-svelte
+          images: ${{ secrets.DOCKER_USERNAME }}/portfoliosvelte
           tags: |
             type=ref,event=branch
             type=ref,event=pr
