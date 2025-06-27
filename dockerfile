@@ -20,9 +20,9 @@ ENV PUBLIC_RECAPTCHA_SITE_KEY=""
 
 RUN --mount=type=secret,id=ENVFILE,required=false \
     if [ -f /run/secrets/ENVFILE ]; then \
-        source /run/secrets/ENVFILE; \
+    export $(cat /run/secrets/ENVFILE | grep -v '^#' | xargs); \
     elif [ -f .env ]; then \
-        source .env; \
+    export $(cat .env | grep -v '^#' | xargs); \
     fi && \
     npm run build
 
