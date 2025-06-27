@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.10](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.9...v1.2.10) (2025-06-27)
+
+
+### Bug Fixes
+
+* actual name fix ([4b159d3](https://github.com/Ranoth/Portfolio-Svelte/commit/4b159d36f91ffc62b618f264f4c947dafbf35c70))
+* correct image upload address ([f35588e](https://github.com/Ranoth/Portfolio-Svelte/commit/f35588e4ed9ddc45e31b4bf9db23735d1ea40b22))
+
 ## [1.2.9](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.8...v1.2.9) (2025-06-27)
 
 
