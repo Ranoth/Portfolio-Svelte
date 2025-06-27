@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData, SubmitFunction } from './$types';
 	import { onMount } from 'svelte';
-	import { env } from '$env/dynamic/public';
+	import { PUBLIC_RECAPTCHA_SITE_KEY } from '$env/static/public';
 
 	export let form: ActionData;
 
@@ -24,7 +24,7 @@
 
 	onMount(() => {
 		// Only load reCAPTCHA if site key is available
-		if (!env.PUBLIC_RECAPTCHA_SITE_KEY) {
+		if (!PUBLIC_RECAPTCHA_SITE_KEY) {
 			console.warn('reCAPTCHA site key not available - reCAPTCHA will be disabled');
 			return;
 		}
@@ -50,11 +50,11 @@
 	});
 
 	function renderRecaptcha() {
-		if (window.grecaptcha && recaptchaLoaded && env.PUBLIC_RECAPTCHA_SITE_KEY) {
+		if (window.grecaptcha && recaptchaLoaded && PUBLIC_RECAPTCHA_SITE_KEY) {
 			const container = document.getElementById('recaptcha-container');
 			if (container && !recaptchaWidgetId) {
 				recaptchaWidgetId = window.grecaptcha.render('recaptcha-container', {
-					sitekey: env.PUBLIC_RECAPTCHA_SITE_KEY,
+					sitekey: PUBLIC_RECAPTCHA_SITE_KEY,
 					theme: 'dark'
 				});
 			}
@@ -131,7 +131,7 @@
 				<p class="text-xs text-red-600">{form?.errors?.message[0]}</p>
 			{/if}
 		</div>		<div class="col-span-2 flex justify-center">
-			{#if env.PUBLIC_RECAPTCHA_SITE_KEY}
+			{#if PUBLIC_RECAPTCHA_SITE_KEY}
 				<div id="recaptcha-container"></div>
 				{#if !recaptchaLoaded}
 					<div class="text-center text-gray-500">Chargement du CAPTCHA...</div>

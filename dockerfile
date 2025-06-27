@@ -16,10 +16,22 @@ FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 RUN --mount=type=secret,id=ENVFILE,required=false \
+    --mount=type=secret,id=PUBLIC_RECAPTCHA_SITE_KEY,required=false \
+    --mount=type=secret,id=PUBLIC_GITHUB_API_URL,required=false \
+    --mount=type=secret,id=PUBLIC_GITHUB_USERNAME,required=false \
     if [ -f /run/secrets/ENVFILE ]; then \
-    source /run/secrets/ENVFILE; \
+        set -a && source /run/secrets/ENVFILE && set +a; \
     elif [ -f .env ]; then \
-    source .env; \
+        set -a && source .env && set +a; \
+    fi && \
+    if [ -f /run/secrets/PUBLIC_RECAPTCHA_SITE_KEY ]; then \
+        export PUBLIC_RECAPTCHA_SITE_KEY="$(cat /run/secrets/PUBLIC_RECAPTCHA_SITE_KEY)"; \
+    fi && \
+    if [ -f /run/secrets/PUBLIC_GITHUB_API_URL ]; then \
+        export PUBLIC_GITHUB_API_URL="$(cat /run/secrets/PUBLIC_GITHUB_API_URL)"; \
+    fi && \
+    if [ -f /run/secrets/PUBLIC_GITHUB_USERNAME ]; then \
+        export PUBLIC_GITHUB_USERNAME="$(cat /run/secrets/PUBLIC_GITHUB_USERNAME)"; \
     fi && \
     npm run build
 
