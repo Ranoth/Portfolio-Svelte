@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.9](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.8...v1.2.9) (2025-06-27)
+
+
+### Bug Fixes
+
+* e,v ([9a0e2b8](https://github.com/Ranoth/Portfolio-Svelte/commit/9a0e2b8250fb0569da78f3b9a13a0dd8427e9b1f))
+* env ([65bb716](https://github.com/Ranoth/Portfolio-Svelte/commit/65bb7161615938d29b482e0665e4896803dfc28b))
+* env ([37fc862](https://github.com/Ranoth/Portfolio-Svelte/commit/37fc862e4efed30c1ec3e9b07872b17f63aa8278))
+* env ([5de1db7](https://github.com/Ranoth/Portfolio-Svelte/commit/5de1db75a4cc78cbd91acaf0f99cdf7667041b16))
+* env ([940db18](https://github.com/Ranoth/Portfolio-Svelte/commit/940db18959ec0d4d5b87645ab83f019a9e2bd994))
+* env ([2f2dab6](https://github.com/Ranoth/Portfolio-Svelte/commit/2f2dab6f5641aee6e75dd9acb089b44d06c4a02a))
+
 ## [1.2.8](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.7...v1.2.8) (2025-06-27)
 
 
