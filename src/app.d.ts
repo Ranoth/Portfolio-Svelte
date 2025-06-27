@@ -12,6 +12,8 @@ declare global {
 	// Google reCAPTCHA
 	interface Window {
 		grecaptcha: {
+			ready: (callback: () => void) => void;
+			execute: (siteKey: string, options: { action: string }) => Promise<string>;
 			render: (container: string | HTMLElement, parameters: {
 				sitekey: string;
 				theme?: 'light' | 'dark';
@@ -24,6 +26,15 @@ declare global {
 			getResponse: (widgetId?: number) => string;
 		};
 	}
+
+	// Also add it to globalThis for better compatibility
+	var grecaptcha: {
+		ready: (callback: () => void) => void;
+		execute: (siteKey: string, options: { action: string }) => Promise<string>;
+		render: (container: string | HTMLElement, parameters: any) => number;
+		reset: (widgetId?: number) => void;
+		getResponse: (widgetId?: number) => string;
+	};
 }
 
 export {};
