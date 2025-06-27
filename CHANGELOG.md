@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.1...v1.2.2) (2025-06-27)
+
+
+### Bug Fixes
+
+* env vars ([d4b1436](https://github.com/Ranoth/Portfolio-Svelte/commit/d4b1436a3ba5624ca776b2d8d02f4b0b4acfcd52))
+
 ## [1.2.1](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.0...v1.2.1) (2025-06-27)
 
 
