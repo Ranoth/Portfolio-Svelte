@@ -8,17 +8,21 @@
 
 	let loading = false;
 	let recaptchaLoaded = false;
-	let recaptchaWidgetId: number | null = null;
 
-	const animateWait: SubmitFunction = async () => {
+	const animateWait: SubmitFunction = async ({ formData }) => {
 		loading = true;
+		
+		// Execute reCAPTCHA v3 if available
+		if (PUBLIC_RECAPTCHA_SITE_KEY && recaptchaLoaded) {
+			const token = await executeRecaptcha();
+			if (token) {
+				formData.append('g-recaptcha-response', token);
+			}
+		}
+		
 		return async ({ update }) => {
 			loading = false;
 			await update();
-			// Reset reCAPTCHA after form submission
-			if (recaptchaWidgetId !== null && window.grecaptcha) {
-				window.grecaptcha.reset(recaptchaWidgetId);
-			}
 		};
 	};
 
@@ -29,35 +33,36 @@
 			return;
 		}
 
-		// Load reCAPTCHA script
+		// Load reCAPTCHA v3 script
 		if (!window.grecaptcha) {
 			const script = document.createElement('script');
-			script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
+			script.src = `https://www.google.com/recaptcha/api.js?render=${PUBLIC_RECAPTCHA_SITE_KEY}`;
 			script.async = true;
 			script.defer = true;
 			
-			// Define the callback function globally
-			(window as any).onRecaptchaLoad = () => {
+			script.onload = () => {
 				recaptchaLoaded = true;
-				renderRecaptcha();
 			};
 			
 			document.head.appendChild(script);
 		} else {
 			recaptchaLoaded = true;
-			renderRecaptcha();
 		}
 	});
 
-	function renderRecaptcha() {
-		if (window.grecaptcha && recaptchaLoaded && PUBLIC_RECAPTCHA_SITE_KEY) {
-			const container = document.getElementById('recaptcha-container');
-			if (container && !recaptchaWidgetId) {
-				recaptchaWidgetId = window.grecaptcha.render('recaptcha-container', {
-					sitekey: PUBLIC_RECAPTCHA_SITE_KEY,
-					theme: 'dark'
-				});
-			}
+	async function executeRecaptcha(): Promise<string | null> {
+		if (!window.grecaptcha || !recaptchaLoaded || !PUBLIC_RECAPTCHA_SITE_KEY) {
+			return null;
+		}
+		
+		try {
+			const token = await window.grecaptcha.execute(PUBLIC_RECAPTCHA_SITE_KEY, {
+				action: 'contact_form'
+			});
+			return token;
+		} catch (error) {
+			console.error('reCAPTCHA execution failed:', error);
+			return null;
 		}
 	}
 </script>
@@ -132,12 +137,21 @@
 			{/if}
 		</div>		<div class="col-span-2 flex justify-center">
 			{#if PUBLIC_RECAPTCHA_SITE_KEY}
-				<div id="recaptcha-container"></div>
 				{#if !recaptchaLoaded}
-					<div class="text-center text-gray-500">Chargement du CAPTCHA...</div>
+					<div class="text-center text-gray-500 text-sm">
+						<div class="loading loading-spinner loading-sm mr-2"></div>
+						Chargement de la protection anti-spam...
+					</div>
+				{:else}
+					<div class="text-center text-green-600 text-sm flex items-center">
+						<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+						</svg>
+						Protection anti-spam active
+					</div>
 				{/if}
 				{#if form?.errors?.['g-recaptcha-response'] ?? false}
-					<p class="text-xs text-red-600">{form?.errors?.['g-recaptcha-response'][0]}</p>
+					<p class="text-xs text-red-600 mt-2">{form?.errors?.['g-recaptcha-response'][0]}</p>
 				{/if}
 			{:else}
 				<div class="text-center text-yellow-500 text-sm">

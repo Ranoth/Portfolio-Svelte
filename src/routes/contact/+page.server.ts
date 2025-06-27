@@ -1,10 +1,6 @@
+import { BASIC_AUTH_PASSWORD, BASIC_AUTH_USERNAME, NTFY_URL, RECAPTCHA_SECRET_KEY } from '$env/static/private';
 import type { Actions } from '@sveltejs/kit';
 import { z } from 'zod';
-
-const NTFY_URL = process.env.NTFY_URL;
-const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME;
-const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD;
-const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
 // Base schema without reCAPTCHA
 const baseContactSchema = z.object({
@@ -24,7 +20,7 @@ const baseContactSchema = z.object({
 	message: z
 		.string({ required_error: 'Un message est requis' })
 		.min(1, { message: 'Un message est requis' })
-		.trim()
+		.trim(),
 });
 
 // Schema with reCAPTCHA validation
@@ -55,7 +51,26 @@ async function verifyCaptcha(token: string): Promise<boolean> {
 		});
 
 		const data = await response.json();
-		return data.success === true;
+		
+		// For reCAPTCHA v3, also check the score and action
+		if (data.success) {
+			// Check if score is above threshold (0.5 is a common threshold)
+			if (data.score && data.score < 0.5) {
+				console.log('reCAPTCHA score too low:', data.score);
+				return false;
+			}
+			
+			// Check if action matches (optional but recommended)
+			if (data.action && data.action !== 'contact_form') {
+				console.log('reCAPTCHA action mismatch:', data.action);
+				return false;
+			}
+			
+			return true;
+		}
+		
+		console.log('reCAPTCHA verification failed:', data['error-codes']);
+		return false;
 	} catch (error) {
 		console.error('CAPTCHA verification error:', error);
 		return false;
