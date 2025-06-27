@@ -1,32 +1,74 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData, SubmitFunction } from "./$types";
+	import { PUBLIC_RECAPTCHA_SITE_KEY } from '$env/static/public';
+	import type { ActionData, SubmitFunction } from './$types';
+	import { onMount } from 'svelte';
 
 	export let form: ActionData;
 
 	let loading = false;
+	let recaptchaLoaded = false;
+	let recaptchaWidgetId: number | null = null;
 
 	const animateWait: SubmitFunction = async () => {
 		loading = true;
 		return async ({ update }) => {
 			loading = false;
 			await update();
+			// Reset reCAPTCHA after form submission
+			if (recaptchaWidgetId !== null && window.grecaptcha) {
+				window.grecaptcha.reset(recaptchaWidgetId);
+			}
 		};
 	};
+
+	onMount(() => {
+		// Load reCAPTCHA script
+		if (!window.grecaptcha) {
+			const script = document.createElement('script');
+			script.src = 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit';
+			script.async = true;
+			script.defer = true;
+			
+			// Define the callback function globally
+			(window as any).onRecaptchaLoad = () => {
+				recaptchaLoaded = true;
+				renderRecaptcha();
+			};
+			
+			document.head.appendChild(script);
+		} else {
+			recaptchaLoaded = true;
+			renderRecaptcha();
+		}
+	});
+
+	function renderRecaptcha() {
+		if (window.grecaptcha && recaptchaLoaded) {
+			const container = document.getElementById('recaptcha-container');
+			if (container && !recaptchaWidgetId) {
+				recaptchaWidgetId = window.grecaptcha.render('recaptcha-container', {
+					sitekey: PUBLIC_RECAPTCHA_SITE_KEY,
+					theme: 'dark'
+				});
+			}
+		}
+	}
 </script>
 
 <svelte:head>
 	<title>Contact</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="description" content="Contactez-moi">
+	<meta name="description" content="Contactez-moi" />
 </svelte:head>
 
-{#if !form?.success ?? false}
+{#if !form?.success}
 	<form
 		method="POST"
 		action="?/postContact"
 		use:enhance={animateWait}
-		class="grid grid-cols-2 items-stretch gap-3">
+		class="grid grid-cols-2 items-stretch gap-3"
+	>
 		<div>
 			<label for="name">Nom :</label>
 			<input
@@ -34,8 +76,9 @@
 				type="text"
 				name="name"
 				placeholder="Jean Dupon"
-				value={form?.data?.name ?? ""}
-				class:border-red-600={form?.errors?.name ?? false} />
+				value={form?.data?.name ?? ''}
+				class:border-red-600={form?.errors?.name ?? false}
+			/>
 			{#if form?.errors?.name ?? false}
 				<p class="text-xs text-red-600">{form?.errors?.name[0]}</p>
 			{/if}
@@ -47,8 +90,9 @@
 				type="text"
 				name="email"
 				placeholder="prefixe@domaine.tld"
-				value={form?.data?.email ?? ""}
-				class:border-red-600={form?.errors?.email ?? false} />
+				value={form?.data?.email ?? ''}
+				class:border-red-600={form?.errors?.email ?? false}
+			/>
 			{#if form?.errors?.email ?? false}
 				<p class="text-xs text-red-600">{form?.errors?.email[0]}</p>
 			{/if}
@@ -60,8 +104,9 @@
 				type="text"
 				name="subject"
 				placeholder="Sujet"
-				value={form?.data?.subject ?? ""}
-				class:border-red-600={form?.errors?.subject ?? false} />
+				value={form?.data?.subject ?? ''}
+				class:border-red-600={form?.errors?.subject ?? false}
+			/>
 			{#if form?.errors?.subject ?? false}
 				<p class="text-xs text-red-600">{form?.errors?.subject[0]}</p>
 			{/if}
@@ -73,22 +118,29 @@
 				name="message"
 				rows="6"
 				placeholder="Votre message"
-				value={form?.data?.message?.toString() ?? ""}
-				class:border-red-600={form?.errors?.message ?? false} />
+				value={form?.data?.message?.toString() ?? ''}
+				class:border-red-600={form?.errors?.message ?? false}
+			/>
 			{#if form?.errors?.message ?? false}
 				<p class="text-xs text-red-600">{form?.errors?.message[0]}</p>
 			{/if}
+		</div>		<div class="col-span-2 flex justify-center">
+			<div id="recaptcha-container"></div>
+			{#if !recaptchaLoaded}
+				<div class="text-center text-gray-500">Chargement du CAPTCHA...</div>
+			{/if}
+			{#if form?.errors?.['g-recaptcha-response'] ?? false}
+				<p class="text-xs text-red-600">{form?.errors?.['g-recaptcha-response'][0]}</p>
+			{/if}
 		</div>
-		<button
-			type="submit"
-			aria-busy={loading}
-			class="btn-primary btn col-span-2">
+		<button type="submit" aria-busy={loading} class="btn-primary btn col-span-2">
 			{#if loading}
 				<iconify-icon
 					icon="icomoon-free:spinner2"
 					width="24"
 					height="24"
-					class:animate-spin={loading} />
+					class:animate-spin={loading}
+				/>
 			{:else}
 				Envoyer
 			{/if}
@@ -103,6 +155,7 @@
 				if (form) {
 					form.success = false;
 				}
-			}}>Retourner au formulaire</button>
+			}}>Retourner au formulaire</button
+		>
 	</div>
 {/if}

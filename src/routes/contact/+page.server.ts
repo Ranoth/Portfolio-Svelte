@@ -2,6 +2,7 @@ import {
 	NTFY_URL,
 	BASIC_AUTH_USERNAME,
 	BASIC_AUTH_PASSWORD,
+	RECAPTCHA_SECRET_KEY,
 } from "$env/static/private";
 import type { Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
@@ -29,7 +30,30 @@ const contactSchema = z.object({
 		.string({ required_error: "Un message est requis" })
 		.min(1, { message: "Un message est requis" })
 		.trim(),
+	"g-recaptcha-response": z
+		.string({ required_error: "Veuillez compléter le CAPTCHA" })
+		.min(1, { message: "Veuillez compléter le CAPTCHA" }),
 });
+
+async function verifyCaptcha(token: string): Promise<boolean> {
+	const verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+	
+	try {
+		const response = await fetch(verifyUrl, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: `secret=${RECAPTCHA_SECRET_KEY}&response=${token}`,
+		});
+		
+		const data = await response.json();
+		return data.success === true;
+	} catch (error) {
+		console.error('CAPTCHA verification error:', error);
+		return false;
+	}
+}
 
 async function postData(formData: any) {
 	return await fetch(NTFY_URL, {
@@ -60,7 +84,23 @@ export const actions: Actions = {
 		const zForm = Object.fromEntries(formData);
 
 		try {
-			contactSchema.parse(zForm);
+			// Validate the form data including CAPTCHA token
+			const validatedData = contactSchema.parse(zForm);
+			
+			// Verify CAPTCHA
+			const captchaToken = validatedData["g-recaptcha-response"];
+			const isCaptchaValid = await verifyCaptcha(captchaToken);
+			
+			if (!isCaptchaValid) {
+				return {
+					data: zForm,
+					errors: {
+						"g-recaptcha-response": ["Veuillez compléter le CAPTCHA correctement"]
+					},
+					success: false,
+				};
+			}
+
 			await postData(formData);
 			return {
 				success: true,

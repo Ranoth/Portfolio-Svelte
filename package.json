@@ -43,6 +43,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@types/grecaptcha": "^3.0.9",
+		"@types/node": "^24.0.4",
 		"daisyui": "^4.10.5",
 		"iconify-icon": "^2.1.0",
 		"sveltekit-sitemap": "github:Joonel/sveltekit-sitemap",
