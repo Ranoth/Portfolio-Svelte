@@ -8,7 +8,6 @@ on:
   # pull_request:
   #   branches:
   #     - master
-  workflow_dispatch: # Allows manual triggering from GitHub UI
   release:
     types:
       - released
@@ -23,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/portfoliosvelte
+          images: ${{ secrets.DOCKER_USERNAME }}/docs-skeleton
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -37,7 +36,7 @@ jobs:
         # if: github.event_name != 'pull_request'
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          password: ${{ secrets.DOCKER_PAT }}
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
@@ -47,4 +46,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
-            ENVFILE=${{ secrets.ENVFILE }}
+            "ENVFILE=${{ secrets.ENVFILE }}"
