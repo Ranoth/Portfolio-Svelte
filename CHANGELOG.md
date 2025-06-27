@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.2.12](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.11...v1.2.12) (2025-06-27)
+
+
+### Bug Fixes
+
+* captcha ([755ad3e](https://github.com/Ranoth/Portfolio-Svelte/commit/755ad3ecec38db0478029fb0059384796db932e2))
+* ci ([55f759e](https://github.com/Ranoth/Portfolio-Svelte/commit/55f759ea4a2a4475de382964b98975b3d4f7e39a))
+* ci ([28de518](https://github.com/Ranoth/Portfolio-Svelte/commit/28de518a06da0f9e4b66663925dfeafa9a76a7d1))
+* ci ([d093b71](https://github.com/Ranoth/Portfolio-Svelte/commit/d093b71f8fe98991f5d3d20b231eae9632000f7f))
+* ci ([63f3bcb](https://github.com/Ranoth/Portfolio-Svelte/commit/63f3bcb3833003c0ba9dc8290b0354da0d2f8ee5))
+* ci ([754cd2d](https://github.com/Ranoth/Portfolio-Svelte/commit/754cd2dd93f739f2e13db956d0e26cdb5afb1d3f))
+* ci ([6241a09](https://github.com/Ranoth/Portfolio-Svelte/commit/6241a09b77989f34f08d69cd92cda301af475e76))
+* ci ([7b50b91](https://github.com/Ranoth/Portfolio-Svelte/commit/7b50b91b2f86f471c6bd5cc50cd20440ec3ca4e4))
+* ci ([f94f65b](https://github.com/Ranoth/Portfolio-Svelte/commit/f94f65b632f14b9f2c6b795799c41b80d7a0da95))
+* ci ([c6e6cdf](https://github.com/Ranoth/Portfolio-Svelte/commit/c6e6cdf7902fb203caf7eb6997625700041e71cd))
+* ci ([8003730](https://github.com/Ranoth/Portfolio-Svelte/commit/800373053a42f0ca609d1bd5712f5ff17781ec2b))
+* ci ([4793b87](https://github.com/Ranoth/Portfolio-Svelte/commit/4793b8771b5bcce106b32bc9d447bf0dcd68c125))
+* Use correct ReCaptcha version ([fa74124](https://github.com/Ranoth/Portfolio-Svelte/commit/fa741248cc8e93c0d1074864441d15a09e8d98c0))
+
 ## [1.2.11](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.10...v1.2.11) (2025-06-27)
 
 
