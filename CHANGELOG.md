@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.13...v1.3.0) (2025-06-27)
+
+
+### Features
+
+* Add ReCaptcha v3 ([2a025fd](https://github.com/Ranoth/Portfolio-Svelte/commit/2a025fd7dd29292ab9a0bc8f533399285d53a729))
+
 ## [1.2.13](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.12...v1.2.13) (2025-06-27)
 
 
