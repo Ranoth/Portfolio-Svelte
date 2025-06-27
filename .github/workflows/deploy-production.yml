@@ -8,6 +8,7 @@ on:
   # pull_request:
   #   branches:
   #     - master
+  workflow_dispatch: # Allows manual triggering from GitHub UI
   release:
     types:
       - released
@@ -46,4 +47,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
-            "ENVFILE=${{ secrets.ENVFILE }}"
+            ENVFILE=${{ secrets.ENVFILE }}
