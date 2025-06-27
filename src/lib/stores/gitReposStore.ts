@@ -1,4 +1,4 @@
-import { PUBLIC_GITHUB_API_URL, PUBLIC_GITHUB_USERNAME } from "$env/static/public";
+// import { PUBLIC_GITHUB_API_URL, PUBLIC_GITHUB_USERNAME } from "$env/static/public";
 import type { Repository } from "$lib/types/gitRepo";
 import { writable } from "svelte/store";
 
@@ -6,7 +6,7 @@ export const gitRepos = writable<Repository[]>([]);
 
 export const fetchRepos = async () => {
 	const res = await fetch(
-		`${PUBLIC_GITHUB_API_URL}/users/${PUBLIC_GITHUB_USERNAME}/repos`
+		`${process.env.PUBLIC_GITHUB_API_URL}/users/${process.env.PUBLIC_GITHUB_USERNAME}/repos`
 	);
 
 	const data = await res.json();
