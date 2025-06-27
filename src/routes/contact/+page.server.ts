@@ -1,15 +1,11 @@
 import {
 	NTFY_URL,
 	BASIC_AUTH_USERNAME,
-	BASIC_AUTH_PASSWORD
+	BASIC_AUTH_PASSWORD,
+	RECAPTCHA_SECRET_KEY
 } from '$env/static/private';
-// Import RECAPTCHA_SECRET_KEY as optional
-import { env } from '$env/dynamic/private';
 import type { Actions } from '@sveltejs/kit';
 import { z } from 'zod';
-
-// Get the reCAPTCHA secret key, with fallback to empty string if not available
-const RECAPTCHA_SECRET_KEY = env.RECAPTCHA_SECRET_KEY || '';
 
 // Base schema without reCAPTCHA
 const baseContactSchema = z.object({

@@ -2,12 +2,12 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData, SubmitFunction } from './$types';
 	import { onMount } from 'svelte';
-	import { env } from '$env/dynamic/public';
+	import { PUBLIC_RECAPTCHA_SITE_KEY } from '$env/static/public';
 
 	export let form: ActionData;
 
 	// Get the reCAPTCHA site key, with fallback to empty string if not available
-	const PUBLIC_RECAPTCHA_SITE_KEY = env.PUBLIC_RECAPTCHA_SITE_KEY || '';
+	// const PUBLIC_RECAPTCHA_SITE_KEY = PUBLIC_RECAPTCHA_SITE_KEY || '';
 
 	let loading = false;
 	let recaptchaLoaded = false;
