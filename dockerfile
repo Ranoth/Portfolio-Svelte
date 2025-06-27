@@ -2,18 +2,19 @@ FROM node:lts-alpine AS base
 WORKDIR /app
 
 FROM base AS install
-RUN mkdir -p /temp/dev
-COPY package.json package-lock.json /temp/dev/
-RUN cd /temp/dev && npm install
+RUN mkdir -p /temp/dev /temp/prod
 
-RUN mkdir -p /temp/prod
+COPY package.json package-lock.json /temp/dev/
+WORKDIR /temp/dev
+RUN npm ci
+
 COPY package.json package-lock.json /temp/prod/
-RUN cd /temp/prod && npm install --omit=dev
+WORKDIR /temp/prod
+RUN npm ci --omit=dev
 
 FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
-
 RUN --mount=type=secret,id=ENVFILE,required=false \
     if [ -f /run/secrets/ENVFILE ]; then \
     source /run/secrets/ENVFILE; \
@@ -22,7 +23,8 @@ RUN --mount=type=secret,id=ENVFILE,required=false \
     fi && \
     npm run build
 
-FROM base AS release
+FROM node:lts-alpine AS release
+WORKDIR /app
 COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /app/build .
 COPY --from=prerelease /app/package.json .
