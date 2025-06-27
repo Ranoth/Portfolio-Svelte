@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.13](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.12...v1.2.13) (2025-06-27)
+
+
+### Bug Fixes
+
+* ci ([395f5b8](https://github.com/Ranoth/Portfolio-Svelte/commit/395f5b835dbeea6f0076af0a9c52390b393bdb65))
+* ci ([2ca44b2](https://github.com/Ranoth/Portfolio-Svelte/commit/2ca44b2c7baa56229fdf020b97ab23ff61d1cf4a))
+* ci ([7cf9209](https://github.com/Ranoth/Portfolio-Svelte/commit/7cf92091dd5aaac1926ff2bd591fcea50cc64118))
+* ci ([923d5f7](https://github.com/Ranoth/Portfolio-Svelte/commit/923d5f76f24c3ab23ac006c73407f4c7850dddae))
+
 ## [1.2.12](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.2.11...v1.2.12) (2025-06-27)
 
 
