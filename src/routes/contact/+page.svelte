@@ -2,14 +2,14 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData, SubmitFunction } from './$types';
 	import { onMount } from 'svelte';
-	// import { PUBLIC_RECAPTCHA_SITE_KEY } from '$env/static/public';
+	import { PUBLIC_RECAPTCHA_SITE_KEY } from '$env/static/public';
 
 	export let form: ActionData;
 
 	let loading = false;
 	let recaptchaLoaded = false;
 
-	const isRecaptchaEnabled = !!process.env.PUBLIC_RECAPTCHA_SITE_KEY;
+	const isRecaptchaEnabled = !!PUBLIC_RECAPTCHA_SITE_KEY;
 
 	const animateWait: SubmitFunction = async ({ formData }) => {
 		loading = true;
