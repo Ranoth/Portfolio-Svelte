@@ -15,11 +15,14 @@ RUN npm ci --omit=dev
 FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
+
+ENV PUBLIC_RECAPTCHA_SITE_KEY=""
+
 RUN --mount=type=secret,id=ENVFILE,required=false \
     if [ -f /run/secrets/ENVFILE ]; then \
-    export $(cat /run/secrets/ENVFILE | xargs); \
+        source /run/secrets/ENVFILE; \
     elif [ -f .env ]; then \
-    export $(cat .env | xargs); \
+        source .env; \
     fi && \
     npm run build
 

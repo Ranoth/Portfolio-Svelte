@@ -9,12 +9,16 @@
 	let loading = false;
 	let recaptchaLoaded = false;
 
+	// Handle undefined PUBLIC_RECAPTCHA_SITE_KEY gracefully
+	const recaptchaSiteKey = PUBLIC_RECAPTCHA_SITE_KEY || '';
+	const isRecaptchaEnabled = !!recaptchaSiteKey;
+
 	const animateWait: SubmitFunction = async ({ formData }) => {
 		loading = true;
 		console.log('Form submission started');
 		
 		// Execute reCAPTCHA v3 if available
-		if (PUBLIC_RECAPTCHA_SITE_KEY && recaptchaLoaded) {
+		if (isRecaptchaEnabled && recaptchaLoaded) {
 			console.log('Executing reCAPTCHA...');
 			const token = await executeRecaptcha();
 			if (token) {
@@ -25,7 +29,7 @@
 			}
 		} else {
 			console.log('reCAPTCHA not available:', { 
-				siteKey: !!PUBLIC_RECAPTCHA_SITE_KEY, 
+				siteKey: isRecaptchaEnabled, 
 				loaded: recaptchaLoaded 
 			});
 		}
@@ -38,17 +42,17 @@
 
 	onMount(() => {
 		// Only load reCAPTCHA if site key is available
-		if (!PUBLIC_RECAPTCHA_SITE_KEY) {
+		if (!isRecaptchaEnabled) {
 			console.warn('reCAPTCHA site key not available - reCAPTCHA will be disabled');
 			return;
 		}
 
-		console.log('Loading reCAPTCHA v3 with site key:', PUBLIC_RECAPTCHA_SITE_KEY);
+		console.log('Loading reCAPTCHA v3 with site key:', recaptchaSiteKey);
 
 		// Load reCAPTCHA v3 script
 		if (!window.grecaptcha) {
 			const script = document.createElement('script');
-			script.src = `https://www.google.com/recaptcha/api.js?render=${PUBLIC_RECAPTCHA_SITE_KEY}`;
+			script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`;
 			script.async = true;
 			script.defer = true;
 			
@@ -69,18 +73,18 @@
 	});
 
 	async function executeRecaptcha(): Promise<string | null> {
-		if (!window.grecaptcha || !recaptchaLoaded || !PUBLIC_RECAPTCHA_SITE_KEY) {
+		if (!window.grecaptcha || !recaptchaLoaded || !isRecaptchaEnabled) {
 			console.error('reCAPTCHA not ready:', {
 				grecaptcha: !!window.grecaptcha,
 				loaded: recaptchaLoaded,
-				siteKey: !!PUBLIC_RECAPTCHA_SITE_KEY
+				siteKey: isRecaptchaEnabled
 			});
 			return null;
 		}
 		
 		try {
-			console.log('Executing reCAPTCHA with site key:', PUBLIC_RECAPTCHA_SITE_KEY);
-			const token = await window.grecaptcha.execute(PUBLIC_RECAPTCHA_SITE_KEY, {
+			console.log('Executing reCAPTCHA with site key:', recaptchaSiteKey);
+			const token = await window.grecaptcha.execute(recaptchaSiteKey, {
 				action: 'contact_form'
 			});
 			console.log('reCAPTCHA execution successful, token length:', token?.length || 0);
@@ -161,7 +165,7 @@
 				<p class="text-xs text-red-600">{form?.errors?.message[0]}</p>
 			{/if}
 		</div>		<div class="col-span-2">
-			{#if PUBLIC_RECAPTCHA_SITE_KEY}
+			{#if isRecaptchaEnabled}
 				<div class="flex flex-col items-center space-y-2">
 					{#if !recaptchaLoaded}
 						<div class="text-center text-gray-500 text-sm flex items-center">
