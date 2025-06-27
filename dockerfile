@@ -14,8 +14,12 @@ FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-RUN --mount=type=secret,id=ENVFILE \
-    export $(cat /run/secrets/ENVFILE | sed 's/#.*//g' | grep -v '^$' | xargs) && \
+RUN --mount=type=secret,id=ENVFILE,required=false \
+    if [ -f /run/secrets/ENVFILE ]; then \
+    source /run/secrets/ENVFILE; \
+    elif [ -f .env ]; then \
+    source .env; \
+    fi && \
     npm run build
 
 FROM base AS release
