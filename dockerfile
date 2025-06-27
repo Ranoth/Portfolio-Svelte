@@ -16,12 +16,8 @@ FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-RUN --mount=type=secret,id=ENVFILE,required=false \
-    if [ -f /run/secrets/ENVFILE ]; then \
-    source /run/secrets/ENVFILE; \
-    elif [ -f .env ]; then \
-    source .env; \
-    fi && \
+RUN --mount=type=secret,id=ENVFILE \
+    export $( xargs < /run/secrets/ENVFILE ) && \
     npm run build
 
 FROM node:lts-alpine AS release
