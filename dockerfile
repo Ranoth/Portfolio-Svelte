@@ -17,10 +17,20 @@ COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
 RUN --mount=type=secret,id=ENVFILE,required=false \
+    --mount=type=secret,id=PUBLIC_GITHUB_USERNAME,required=false \
+    --mount=type=secret,id=PUBLIC_GITHUB_API_URL,required=false \
+    --mount=type=secret,id=PUBLIC_RECAPTCHA_SITE_KEY,required=false \
     if [ -f /run/secrets/ENVFILE ]; then \
-    source /run/secrets/ENVFILE; \
-    elif [ -f .env ]; then \
-    source .env; \
+        cat /run/secrets/ENVFILE > .env; \
+    fi && \
+    if [ -f /run/secrets/PUBLIC_GITHUB_USERNAME ]; then \
+        echo "PUBLIC_GITHUB_USERNAME=$(cat /run/secrets/PUBLIC_GITHUB_USERNAME)" >> .env; \
+    fi && \
+    if [ -f /run/secrets/PUBLIC_GITHUB_API_URL ]; then \
+        echo "PUBLIC_GITHUB_API_URL=$(cat /run/secrets/PUBLIC_GITHUB_API_URL)" >> .env; \
+    fi && \
+    if [ -f /run/secrets/PUBLIC_RECAPTCHA_SITE_KEY ]; then \
+        echo "PUBLIC_RECAPTCHA_SITE_KEY=$(cat /run/secrets/PUBLIC_RECAPTCHA_SITE_KEY)" >> .env; \
     fi && \
     npm run build
 
