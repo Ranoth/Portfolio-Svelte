@@ -3,13 +3,16 @@ import {
 	BASIC_AUTH_USERNAME,
 	BASIC_AUTH_PASSWORD,
 	RECAPTCHA_SECRET_KEY,
+	RECAPTCHA_SITE_KEY,
 } from "$env/static/private";
 import type { Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { z } from "zod";
 
 export const load: PageServerLoad = async () => {
-	return {};
+	return {
+		recaptchaSiteKey: RECAPTCHA_SITE_KEY
+	};
 };
 
 const contactSchema = z.object({

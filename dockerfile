@@ -15,9 +15,7 @@ COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
 RUN --mount=type=secret,id=ENVFILE \
-    set -a && \
-    . /run/secrets/ENVFILE && \
-    set +a && \
+    export $(cat /run/secrets/ENVFILE | sed 's/#.*//g' | grep -v '^$' | xargs) && \
     npm run build
 
 FROM base as release

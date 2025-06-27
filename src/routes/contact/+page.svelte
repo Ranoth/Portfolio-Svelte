@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { PUBLIC_RECAPTCHA_SITE_KEY } from '$env/static/public';
 	import type { ActionData, SubmitFunction } from './$types';
 	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
 
 	export let form: ActionData;
+	export let data: PageData;
 
 	let loading = false;
 	let recaptchaLoaded = false;
@@ -44,11 +45,11 @@
 	});
 
 	function renderRecaptcha() {
-		if (window.grecaptcha && recaptchaLoaded) {
+		if (window.grecaptcha && recaptchaLoaded && data.recaptchaSiteKey) {
 			const container = document.getElementById('recaptcha-container');
 			if (container && !recaptchaWidgetId) {
 				recaptchaWidgetId = window.grecaptcha.render('recaptcha-container', {
-					sitekey: PUBLIC_RECAPTCHA_SITE_KEY,
+					sitekey: data.recaptchaSiteKey,
 					theme: 'dark'
 				});
 			}
