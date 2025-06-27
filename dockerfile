@@ -18,9 +18,9 @@ COPY . .
 
 RUN --mount=type=secret,id=ENVFILE,required=false \
     if [ -f /run/secrets/ENVFILE ]; then \
-        set -a && source /run/secrets/ENVFILE && set +a; \
+    source /run/secrets/ENVFILE; \
     elif [ -f .env ]; then \
-        set -a && source .env && set +a; \
+    source .env; \
     fi && \
     npm run build
 
