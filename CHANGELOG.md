@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.1.1...v1.2.0) (2025-06-27)
+
+
+### Features
+
+* Add captcha to contact form ([edeb1dc](https://github.com/Ranoth/Portfolio-Svelte/commit/edeb1dcffb00d3c2dea470089445b99c9864f4e2))
+
 ## [1.1.1](https://github.com/Ranoth/Portfolio-Svelte/compare/v1.1.0...v1.1.1) (2025-06-19)
 
 
