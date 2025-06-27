@@ -16,18 +16,11 @@ FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-# Set default empty values for all environment variables to prevent build errors
-ENV PUBLIC_RECAPTCHA_SITE_KEY=""
-ENV RECAPTCHA_SECRET_KEY=""
-ENV NTFY_URL=""
-ENV BASIC_AUTH_USERNAME=""
-ENV BASIC_AUTH_PASSWORD=""
-
 RUN --mount=type=secret,id=ENVFILE,required=false \
     if [ -f /run/secrets/ENVFILE ]; then \
-    export $(cat /run/secrets/ENVFILE | grep -v '^#' | xargs); \
+    source /run/secrets/ENVFILE; \
     elif [ -f .env ]; then \
-    export $(cat .env | grep -v '^#' | xargs); \
+    source .env; \
     fi && \
     npm run build
 

@@ -9,9 +9,7 @@
 	let loading = false;
 	let recaptchaLoaded = false;
 
-	// Handle undefined PUBLIC_RECAPTCHA_SITE_KEY gracefully
-	const recaptchaSiteKey = PUBLIC_RECAPTCHA_SITE_KEY || '';
-	const isRecaptchaEnabled = !!recaptchaSiteKey;
+	const isRecaptchaEnabled = !!PUBLIC_RECAPTCHA_SITE_KEY;
 
 	const animateWait: SubmitFunction = async ({ formData }) => {
 		loading = true;
@@ -47,12 +45,12 @@
 			return;
 		}
 
-		console.log('Loading reCAPTCHA v3 with site key:', recaptchaSiteKey);
+		console.log('Loading reCAPTCHA v3 with site key:', PUBLIC_RECAPTCHA_SITE_KEY);
 
 		// Load reCAPTCHA v3 script
 		if (!window.grecaptcha) {
 			const script = document.createElement('script');
-			script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`;
+			script.src = `https://www.google.com/recaptcha/api.js?render=${PUBLIC_RECAPTCHA_SITE_KEY}`;
 			script.async = true;
 			script.defer = true;
 			
@@ -83,8 +81,8 @@
 		}
 		
 		try {
-			console.log('Executing reCAPTCHA with site key:', recaptchaSiteKey);
-			const token = await window.grecaptcha.execute(recaptchaSiteKey, {
+			console.log('Executing reCAPTCHA with site key:', PUBLIC_RECAPTCHA_SITE_KEY);
+			const token = await window.grecaptcha.execute(PUBLIC_RECAPTCHA_SITE_KEY, {
 				action: 'contact_form'
 			});
 			console.log('reCAPTCHA execution successful, token length:', token?.length || 0);
