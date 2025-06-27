@@ -26,17 +26,22 @@ const baseContactSchema = z.object({
 // Schema with reCAPTCHA validation
 const contactSchemaWithCaptcha = baseContactSchema.extend({
 	'g-recaptcha-response': z
-		.string({ required_error: 'Veuillez compléter le CAPTCHA' })
-		.min(1, { message: 'Veuillez compléter le CAPTCHA' })
+		.string({ required_error: 'Protection anti-spam requise - veuillez réessayer' })
+		.min(1, { message: 'Vérification de sécurité manquante' })
 });
 
 // Use appropriate schema based on whether reCAPTCHA is configured
 const contactSchema = RECAPTCHA_SECRET_KEY ? contactSchemaWithCaptcha : baseContactSchema;
 
-async function verifyCaptcha(token: string): Promise<boolean> {
+async function verifyCaptcha(token: string): Promise<{ success: boolean; error?: string }> {
 	// If no secret key is configured, skip CAPTCHA verification
 	if (!RECAPTCHA_SECRET_KEY) {
-		return true;
+		console.warn('reCAPTCHA secret key not configured - skipping verification');
+		return { success: true };
+	}
+
+	if (!token) {
+		return { success: false, error: 'Token de sécurité manquant' };
 	}
 
 	const verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
@@ -50,49 +55,91 @@ async function verifyCaptcha(token: string): Promise<boolean> {
 			body: `secret=${RECAPTCHA_SECRET_KEY}&response=${token}`
 		});
 
+		if (!response.ok) {
+			console.error('reCAPTCHA API request failed:', response.status, response.statusText);
+			return { success: false, error: 'Service de vérification temporairement indisponible' };
+		}
+
 		const data = await response.json();
+		console.log('reCAPTCHA response:', { 
+			success: data.success, 
+			score: data.score, 
+			action: data.action,
+			errors: data['error-codes']
+		});
 		
-		// For reCAPTCHA v3, also check the score and action
-		if (data.success) {
-			// Check if score is above threshold (0.5 is a common threshold)
-			if (data.score && data.score < 0.5) {
-				console.log('reCAPTCHA score too low:', data.score);
-				return false;
+		// For reCAPTCHA v3, check success first
+		if (!data.success) {
+			const errorCodes = data['error-codes'] || [];
+			console.error('reCAPTCHA verification failed:', errorCodes);
+			
+			// Handle specific error codes
+			if (errorCodes.includes('invalid-input-secret')) {
+				return { success: false, error: 'Configuration du service anti-spam incorrecte' };
+			}
+			if (errorCodes.includes('invalid-input-response')) {
+				return { success: false, error: 'Token de sécurité invalide - veuillez réessayer' };
+			}
+			if (errorCodes.includes('timeout-or-duplicate')) {
+				return { success: false, error: 'Token de sécurité expiré - veuillez réessayer' };
 			}
 			
-			// Check if action matches (optional but recommended)
-			if (data.action && data.action !== 'contact_form') {
-				console.log('reCAPTCHA action mismatch:', data.action);
-				return false;
-			}
-			
-			return true;
+			return { success: false, error: 'Vérification de sécurité échouée - veuillez réessayer' };
 		}
 		
-		console.log('reCAPTCHA verification failed:', data['error-codes']);
-		return false;
+		// Check score for v3 (0.5 is a reasonable threshold)
+		if (data.score !== undefined) {
+			if (data.score < 0.5) {
+				console.log('reCAPTCHA score too low:', data.score);
+				return { success: false, error: 'Vérification de sécurité échouée - comportement suspect détecté' };
+			}
+		}
+		
+		// Check action matches (optional but recommended for v3)
+		if (data.action && data.action !== 'contact_form') {
+			console.log('reCAPTCHA action mismatch:', data.action, 'expected: contact_form');
+			return { success: false, error: 'Contexte de sécurité invalide' };
+		}
+		
+		return { success: true };
+		
 	} catch (error) {
 		console.error('CAPTCHA verification error:', error);
-		return false;
+		return { success: false, error: 'Service de vérification temporairement indisponible' };
 	}
 }
 
-async function postData(formData: any) {
-	return await fetch(NTFY_URL, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Basic ${btoa(`${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}`)}`,
-			Title: 'New Contact Form Submission',
-			Priority: '4'
-		},
-		body: `Name: ${formData.get('name')}\nEmail: ${formData.get(
-			'email'
-		)}\nSubject: ${formData.get('subject')}\nMessage: ${formData.get('message')}`
-	})
-		.then((res) => res.json())
-		.then((data) => console.log(data))
-		.catch((err) => console.log(err));
+async function postData(formData: FormData) {
+	try {
+		if (!NTFY_URL || !BASIC_AUTH_USERNAME || !BASIC_AUTH_PASSWORD) {
+			console.warn('Notification service not configured - message will not be sent');
+			return;
+		}
+
+		const response = await fetch(NTFY_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'text/plain',
+				Authorization: `Basic ${btoa(`${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}`)}`,
+				Title: 'New Contact Form Submission',
+				Priority: '4'
+			},
+			body: `Name: ${formData.get('name')}\nEmail: ${formData.get(
+				'email'
+			)}\nSubject: ${formData.get('subject')}\nMessage: ${formData.get('message')}`
+		});
+
+		if (!response.ok) {
+			throw new Error(`Notification service responded with status: ${response.status}`);
+		}
+
+		const result = await response.json();
+		console.log('Notification sent successfully:', result);
+		return result;
+	} catch (error) {
+		console.error('Failed to send notification:', error);
+		throw error;
+	}
 }
 
 /** @type {import('./$types').Actions} */
@@ -102,39 +149,54 @@ export const actions: Actions = {
 		const zForm = Object.fromEntries(formData);
 
 		try {
-			// Validate the form data
-			const validatedData = contactSchema.parse(zForm);
-
-			// Verify CAPTCHA if it's enabled
+			// Handle CAPTCHA verification before Zod validation to avoid required_error
 			if (RECAPTCHA_SECRET_KEY) {
 				const captchaToken = (zForm as any)['g-recaptcha-response'];
+				console.log('Received reCAPTCHA token:', captchaToken ? 'Token present' : 'No token');
+				
 				if (!captchaToken) {
+					console.warn('No reCAPTCHA token received in form submission');
 					return {
 						data: zForm,
 						errors: {
-							'g-recaptcha-response': ['Veuillez compléter le CAPTCHA']
+							'g-recaptcha-response': ['Protection anti-spam requise - veuillez réessayer']
 						},
 						success: false
 					};
 				}
 
-				const isCaptchaValid = await verifyCaptcha(captchaToken);
-				if (!isCaptchaValid) {
+				const captchaResult = await verifyCaptcha(captchaToken);
+				if (!captchaResult.success) {
+					console.error('reCAPTCHA verification failed:', captchaResult.error);
 					return {
 						data: zForm,
 						errors: {
-							'g-recaptcha-response': ['Veuillez compléter le CAPTCHA correctement']
+							'g-recaptcha-response': [captchaResult.error || 'Échec de la vérification anti-spam']
 						},
 						success: false
 					};
 				}
+				
+				console.log('reCAPTCHA verification successful');
 			}
 
-			await postData(formData);
+			// Validate the form data (this will now pass for reCAPTCHA since we handled it above)
+			const validatedData = contactSchema.parse(zForm);
+
+			// Send notification
+			try {
+				await postData(formData);
+				console.log('Contact form submitted successfully');
+			} catch (notificationError) {
+				console.error('Failed to send notification, but form was valid:', notificationError);
+				// Continue anyway - don't fail the form submission if notification fails
+			}
+
 			return {
 				success: true
 			};
 		} catch (error: any) {
+			console.error('Form validation error:', error);
 			const { fieldErrors: errors } = error.flatten();
 			const data = zForm;
 			return {
