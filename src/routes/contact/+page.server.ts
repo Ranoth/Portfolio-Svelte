@@ -1,13 +1,18 @@
 import {
 	NTFY_URL,
 	BASIC_AUTH_USERNAME,
-	BASIC_AUTH_PASSWORD,
-	RECAPTCHA_SECRET_KEY
+	BASIC_AUTH_PASSWORD
 } from '$env/static/private';
+// Import RECAPTCHA_SECRET_KEY as optional
+import { env } from '$env/dynamic/private';
 import type { Actions } from '@sveltejs/kit';
 import { z } from 'zod';
 
-const contactSchema = z.object({
+// Get the reCAPTCHA secret key, with fallback to empty string if not available
+const RECAPTCHA_SECRET_KEY = env.RECAPTCHA_SECRET_KEY || '';
+
+// Base schema without reCAPTCHA
+const baseContactSchema = z.object({
 	name: z
 		.string({ required_error: 'Votre nom est requis' })
 		.min(1, { message: 'Votre nom est requis' })
@@ -24,13 +29,25 @@ const contactSchema = z.object({
 	message: z
 		.string({ required_error: 'Un message est requis' })
 		.min(1, { message: 'Un message est requis' })
-		.trim(),
+		.trim()
+});
+
+// Schema with reCAPTCHA validation
+const contactSchemaWithCaptcha = baseContactSchema.extend({
 	'g-recaptcha-response': z
 		.string({ required_error: 'Veuillez compléter le CAPTCHA' })
 		.min(1, { message: 'Veuillez compléter le CAPTCHA' })
 });
 
+// Use appropriate schema based on whether reCAPTCHA is configured
+const contactSchema = RECAPTCHA_SECRET_KEY ? contactSchemaWithCaptcha : baseContactSchema;
+
 async function verifyCaptcha(token: string): Promise<boolean> {
+	// If no secret key is configured, skip CAPTCHA verification
+	if (!RECAPTCHA_SECRET_KEY) {
+		return true;
+	}
+
 	const verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
 	try {
@@ -75,21 +92,32 @@ export const actions: Actions = {
 		const zForm = Object.fromEntries(formData);
 
 		try {
-			// Validate the form data including CAPTCHA token
+			// Validate the form data
 			const validatedData = contactSchema.parse(zForm);
 
-			// Verify CAPTCHA
-			const captchaToken = validatedData['g-recaptcha-response'];
-			const isCaptchaValid = await verifyCaptcha(captchaToken);
+			// Verify CAPTCHA if it's enabled
+			if (RECAPTCHA_SECRET_KEY) {
+				const captchaToken = (zForm as any)['g-recaptcha-response'];
+				if (!captchaToken) {
+					return {
+						data: zForm,
+						errors: {
+							'g-recaptcha-response': ['Veuillez compléter le CAPTCHA']
+						},
+						success: false
+					};
+				}
 
-			if (!isCaptchaValid) {
-				return {
-					data: zForm,
-					errors: {
-						'g-recaptcha-response': ['Veuillez compléter le CAPTCHA correctement']
-					},
-					success: false
-				};
+				const isCaptchaValid = await verifyCaptcha(captchaToken);
+				if (!isCaptchaValid) {
+					return {
+						data: zForm,
+						errors: {
+							'g-recaptcha-response': ['Veuillez compléter le CAPTCHA correctement']
+						},
+						success: false
+					};
+				}
 			}
 
 			await postData(formData);

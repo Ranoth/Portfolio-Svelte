@@ -2,9 +2,12 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData, SubmitFunction } from './$types';
 	import { onMount } from 'svelte';
-	import { PUBLIC_RECAPTCHA_SITE_KEY } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 
 	export let form: ActionData;
+
+	// Get the reCAPTCHA site key, with fallback to empty string if not available
+	const PUBLIC_RECAPTCHA_SITE_KEY = env.PUBLIC_RECAPTCHA_SITE_KEY || '';
 
 	let loading = false;
 	let recaptchaLoaded = false;
@@ -23,6 +26,12 @@
 	};
 
 	onMount(() => {
+		// Only load reCAPTCHA if site key is available
+		if (!PUBLIC_RECAPTCHA_SITE_KEY) {
+			console.warn('reCAPTCHA site key not available - reCAPTCHA will be disabled');
+			return;
+		}
+
 		// Load reCAPTCHA script
 		if (!window.grecaptcha) {
 			const script = document.createElement('script');
@@ -125,12 +134,18 @@
 				<p class="text-xs text-red-600">{form?.errors?.message[0]}</p>
 			{/if}
 		</div>		<div class="col-span-2 flex justify-center">
-			<div id="recaptcha-container"></div>
-			{#if !recaptchaLoaded}
-				<div class="text-center text-gray-500">Chargement du CAPTCHA...</div>
-			{/if}
-			{#if form?.errors?.['g-recaptcha-response'] ?? false}
-				<p class="text-xs text-red-600">{form?.errors?.['g-recaptcha-response'][0]}</p>
+			{#if PUBLIC_RECAPTCHA_SITE_KEY}
+				<div id="recaptcha-container"></div>
+				{#if !recaptchaLoaded}
+					<div class="text-center text-gray-500">Chargement du CAPTCHA...</div>
+				{/if}
+				{#if form?.errors?.['g-recaptcha-response'] ?? false}
+					<p class="text-xs text-red-600">{form?.errors?.['g-recaptcha-response'][0]}</p>
+				{/if}
+			{:else}
+				<div class="text-center text-yellow-500 text-sm">
+					reCAPTCHA non configuré - le formulaire fonctionnera sans validation CAPTCHA
+				</div>
 			{/if}
 		</div>
 		<button type="submit" aria-busy={loading} class="btn-primary btn col-span-2">
